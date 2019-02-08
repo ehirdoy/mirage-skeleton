@@ -1,10 +1,10 @@
 open Lwt.Infix
 
-let stored_stack_handler : Tcpip_stack_direct1.t option ref = ref None
+let stored_stack_handler : Mirage_stack_lwt.V4.t option ref = ref None
 
 module MyNet = struct
 
-  module S = Tcpip_stack_direct1 (* from main.ml *)
+  module S = Mirage_stack_lwt.V4 (* from main.ml *)
 
   let listen port =
     match !stored_stack_handler with
@@ -26,9 +26,9 @@ module MyNet = struct
 
 end
 
-module Main (S: Mirage_stack_lwt.V4 with type t = Tcpip_stack_direct1.t) = struct
+module Main (S: Mirage_stack_lwt.V4) = struct
 
-  let start s =
+  let start (s : Mirage_stack_lwt.V4.t) =
     stored_stack_handler := Some s; (* save in global variable *)
     let port = Key_gen.port () in
     MyNet.listen port
